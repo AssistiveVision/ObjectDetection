@@ -140,7 +140,6 @@ def VideoStreamModifyFrames(frame,shape):
 	image = expand_dims(image, 0)
 	return image, width, height
 
- 
 # get all of the results above a threshold
 def get_boxes(boxes, labels, thresh):
 	v_boxes, v_labels, v_scores = list(), list(), list()
@@ -182,27 +181,20 @@ def draw_boxes(filename, v_boxes, v_labels, v_scores):
 	pyplot.show()
 
 def draw_boxes_videoFrame(frame, v_boxes, v_labels, v_scores):
-	data = frame
-	# plot the image
-	pyplot.imshow(data)
-	# get the context for drawing boxes
-	ax = pyplot.gca()
-	# plot each box
+	data = np.copy(frame)
+	# plot each box on the image 
 	for i in range(len(v_boxes)):
 		box = v_boxes[i]
 		# get coordinates
 		y1, x1, y2, x2 = box.ymin, box.xmin, box.ymax, box.xmax
 		# calculate width and height of the box
 		width, height = x2 - x1, y2 - y1
-		# create the shape
-		rect = Rectangle((x1, y1), width, height, fill=False, color='white')
-		# draw the box
-		ax.add_patch(rect)
+		# create the shape => draw the box
+		cv2.rectangle(data,(x1,y1),(x2,y2),color=(0,0,255))
 		# draw text and score in top left corner
 		label = "%s (%.3f)" % (v_labels[i], v_scores[i])
-		pyplot.text(x1, y1, label, color='white')
-	# show the plot
-	pyplot.show()
+		cv2.putText(data, label , (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36,255,12), 2)
+	return data
  
 
 def readLiveVideoStream():
@@ -250,12 +242,11 @@ def readLiveVideoStream():
 		# summarize what we found
 		for i in range(len(v_boxes)):
 			print(v_labels[i], v_scores[i])
-		
 		# Display the resulting frame
 		# draw what we found
-		draw_boxes_videoFrame(frame, v_boxes, v_labels, v_scores)
+		new_frame=draw_boxes_videoFrame(frame, v_boxes, v_labels, v_scores)
 
-		cv2.imshow('frame',frame)
+		cv2.imshow('frame',new_frame)
 		# cv2.imshow('frame',gray)
 		
 		if cv2.waitKey(1) & 0xFF == ord('q'):
