@@ -37,7 +37,7 @@ image, image_w, image_h = load_image_pixels(photo_filename, (input_w, input_h))
 yhat = model.predict(image)
 # summarize the shape of the list of arrays
 
-# [(1, 13, 13, 255), (1, 26, 26, 255), (1, 52, 52, 255)]
+# Ouptut for Zebra : [(1, 13, 13, 255), (1, 26, 26, 255), (1, 52, 52, 255)]
 # returns a list of three NumPy arrays, the shape of which is displayed as output.
 # These arrays predict both the bounding boxes and class labels but are encoded. They must be interpreted.
 print([a.shape for a in yhat])
